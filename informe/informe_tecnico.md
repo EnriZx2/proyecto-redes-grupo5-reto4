@@ -365,28 +365,28 @@ De cara a una evolución hacia un entorno productivo de mayor envergadura, se pr
 ### 1. Preparación Base, NTP y Acceso SSH
 
 #### Captura 1: Verificación base en `server1-g5`
-![Verificación server1](capturas/Captura2.PNG)
+![Verificación server1](capturas/captura_01_base_server1.PNG)
 
 * **Qué se prueba:** Identidad del servidor (`hostnamectl`), sincronización horaria NTP (`timedatectl`) y permisos del archivo `~/.ssh/authorized_keys`.
 * **Resultado obtenido:** Sistema Ubuntu 22.04.5 LTS activo, reloj sincronizado en zona `Europe/Madrid` y fichero `authorized_keys` con permisos `600` (`-rw-------`) y 381 bytes.
 * **Autor de la captura:** Ibai.
 
 #### Captura 2: Verificación base en `server2-g5`
-![Verificación server2](capturas/Captura.PNG)
+![Verificación server2](capturas/captura_02_base_server2.PNG)
 
 * **Qué se prueba:** Identidad, sincronización NTP y configuración de claves SSH en el servidor secundario.
 * **Resultado obtenido:** Hostname `server2-g5`, NTP activo y clave pública SSH instalada correctamente (381 bytes).
 * **Autor de la captura:** Alexandra.
 
 #### Captura 3: Verificación base en `server3-g5`
-![Verificación server3](capturas/Captura3.PNG)
+![Verificación server3](capturas/captura_03_base_server3.PNG)
 
 * **Qué se prueba:** Identidad, sincronización NTP y existencia del directorio `.ssh` en el servidor web/monitorización.
 * **Resultado obtenido:** Hostname `server3-g5`, reloj sincronizado y fichero `authorized_keys` preparado con permisos seguros `600`.
 * **Autor de la captura:** Enrique.
 
 #### Captura 4: Verificación base en `server4-g5`
-![Verificación server4](capturas/Captura4.PNG)
+![Verificación server4](capturas/captura_04_base_server4.PNG)
 
 * **Qué se prueba:** Identidad y sincronización horaria en el nodo cliente.
 * **Resultado obtenido:** Hostname `server4-g5` verificado con NTP activo.
@@ -403,28 +403,28 @@ De cara a una evolución hacia un entorno productivo de mayor envergadura, se pr
 ### 2. Firewall Perimetral, NAT y DNS Resolver (pfSense)
 
 #### Captura 5: Desactivación del servidor DHCP en pfSense
-![DHCP pfSense desactivado](capturas/Capturadhcp.PNG)
+![DHCP pfSense desactivado](capturas/captura_05_pfsense_dhcp_off.PNG)
 
 * **Qué se prueba:** Configuración de *Services > DHCP Server > LAN* (`192.168.5.0/24`) en pfSense.
 * **Resultado obtenido:** La opción *Enable DHCP server on LAN interface* está desmarcada para delegar la asignación de IPs exclusivamente al clúster DHCP de `server1-g5` y `server2-g5`.
 * **Autor de la captura:** Cristina.
 
 #### Captura 6: Reglas de Redirección de Puertos (NAT Port Forward)
-![NAT pfSense](capturas/firre.PNG)
+![NAT pfSense](capturas/captura_06_pfsense_nat.PNG)
 
 * **Qué se prueba:** Mapeo de puertos externos desde la WAN (`172.26.46.55`) hacia los servidores de la LAN (`192.168.5.0/24`).
 * **Resultado obtenido:** Puertos configurados: `53 TCP/UDP` hacia `.101` (DNS), `2251-2254` hacia puerto `22` de `.101-.104` (SSH), `8580` hacia `.103:80` (Web) y `8581` hacia `.103:8581` (Monitorix).
 * **Autor de la captura:** Cristina.
 
 #### Captura 7: Reglas de Filtrado en Interfaz WAN
-![Reglas WAN pfSense](capturas/fd1.PNG)
+![Reglas WAN pfSense](capturas/captura_07_pfsense_wan.PNG)
 
 * **Qué se prueba:** Permisos de tráfico entrante en la interfaz WAN de pfSense.
 * **Resultado obtenido:** Se permite tráfico DNS (`53`) a los equipos de los integrantes (`.24`, `.8`, `.25`, `.23`), gestión web de pfSense (`80/443`) y el tráfico asociado a las reglas NAT.
 * **Autor de la captura:** Cristina.
 
 #### Captura 8: Configuración de Host Overrides en DNS Resolver (Unbound)
-![Host Overrides pfSense](capturas/hostOverrides.PNG)
+![Host Overrides pfSense](capturas/captura_08_pfsense_dns.PNG)
 
 * **Qué se prueba:** Resolución interna de nombres de dominio en pfSense para `grupo5reto4.eus`.
 * **Resultado obtenido:** `www.grupo5reto4.eus` y `monitor.grupo5reto4.eus` apuntan a `172.26.46.55`, mientras que `reto.grupo5reto4.eus` apunta a `172.16.250.105`.
@@ -441,28 +441,28 @@ De cara a una evolución hacia un entorno productivo de mayor envergadura, se pr
 * **Autor de la captura:** Ibai.
 
 #### Captura 9: Estado del Servidor DHCP Primario (`server1-g5`)
-![Estado DHCP server1](capturas/Comprobaciondedhcpserver1.PNG)
+![Estado DHCP server1](capturas/captura_09_dhcp_status_s1.PNG)
 
 * **Qué se prueba:** Estado del demonio `isc-dhcp-server` y estado de sincronización del pool en `/var/lib/dhcp/dhcpd.leases`.
 * **Resultado obtenido:** Servicio `active (running)`, pool de 50 direcciones balanceado (25 libres / 25 backup) y estado del par failover en `normal`.
 * **Autor de la captura:** Ibai.
 
 #### Captura 10: Estado del Servidor DHCP Secundario (`server2-g5`)
-![Estado DHCP server2](capturas/Comprobaciondeserverdhcp2.PNG)
+![Estado DHCP server2](capturas/captura_10_dhcp_status_s2.PNG)
 
 * **Qué se prueba:** Estado del demonio `isc-dhcp-server` secundario y sincronización con `server1-g5`.
 * **Resultado obtenido:** Servicio `active (running)` y bloque `failover peer "dhcp-failover"` con `my state normal` y `partner state normal` (`mclt 1800`).
 * **Autor de la captura:** Ibai.
 
 #### Captura 11: Prueba de Caída - Parada del DHCP Primario (`server1-g5`)
-![Parada DHCP server1](capturas/pruebadhcpserver1.PNG)
+![Parada DHCP server1](capturas/captura_11_dhcp_stop_s1.PNG)
 
 * **Qué se prueba:** Simulación de fallo crítico deteniendo `isc-dhcp-server` en `server1-g5`.
 * **Resultado obtenido:** El servicio primario queda detenido a las `13:04:23 CET`.
 * **Autor de la captura:** Ibai.
 
 #### Captura 12: Prueba de Failover - Renovación de IP en Cliente (`server4-g5`)
-![Renovación DHCP server4](capturas/pruebadhcpserver4.PNG)
+![Renovación DHCP server4](capturas/captura_12_dhcp_failover_s4.PNG)
 
 * **Qué se prueba:** Liberación (`dhclient -r`) y nueva solicitud de concesión (`dhclient -v`) desde `server4-g5` con `server1-g5` caído.
 * **Resultado obtenido:** `server2-g5` (`192.168.5.102`) responde con `DHCPOFFER` y `DHCPACK`, asignando la IP `192.168.5.104/24` en `eth0` sin pérdida de servicio.
@@ -479,28 +479,28 @@ De cara a una evolución hacia un entorno productivo de mayor envergadura, se pr
 * **Autor de la captura:** Alexandra.
 
 #### Captura 13: Validación de Sintaxis y Zonas en el Maestro (`server1-g5`)
-![Validación zonas DNS](capturas/dns-redundante.PNG)
+![Validación zonas DNS](capturas/captura_13_dns_checkzone.PNG)
 
 * **Qué se prueba:** Comprobación sintáctica de configuración (`named-checkconf`) y de integridad de las zonas directa e inversa (`named-checkzone`).
 * **Resultado obtenido:** Zona directa `grupo5reto4.eus` (serial `2026110607`) y zona inversa `5.168.192.in-addr.arpa` (serial `2026110501`) cargadas con estado `OK`.
 * **Autor de la captura:** Alexandra.
 
 #### Captura 14: Sincronización de Zonas en el Esclavo (`server2-g5`)
-![Sincronización esclavo DNS](capturas/sincronizacion%20esclavo.PNG)
+![Sincronización esclavo DNS](capturas/captura_14_dns_slave_sync.PNG)
 
 * **Qué se prueba:** Transferencia de zona (AXFR) en `/var/cache/bind/` y estado del servicio mediante `rndc status`.
 * **Resultado obtenido:** Archivos replicados presentes (`db.grupo5reto4.eus`, `db.inverso`, `db.192.168.5.s`) y servidor operativo (`server is up and running`).
 * **Autor de la captura:** Alexandra.
 
 #### Captura 15: Prueba de Caída - Parada del DNS Maestro (`server1-g5`)
-![Parada BIND9 server1](capturas/captura_08_dns_failover_resolucion_apagarserver1.PNG)
+![Parada BIND9 server1](capturas/captura_15_dns_stop_s1.PNG)
 
 * **Qué se prueba:** Simulación de caída del servidor DNS maestro deteniendo `bind9` en `server1-g5`.
 * **Resultado obtenido:** Servicio detenido a las `13:09:52 CET`.
 * **Autor de la captura:** Alexandra.
 
 #### Captura 16: Resolución Directa, Alias e Inversa contra el Esclavo (`server2-g5`)
-![Failover DNS resolución](capturas/captura_08_dns_failover_resolucion.PNG)
+![Failover DNS resolución](capturas/captura_16_dns_failover_nslookup.PNG)
 
 * **Qué se prueba:** Consultas `nslookup` apuntando directamente al servidor esclavo (`192.168.5.102`) mientras el maestro está apagado.
 * **Resultado obtenido:** El esclavo resuelve con éxito `www.grupo5reto4.eus` (`172.26.46.55`), el CNAME `monitor.grupo5reto4.eus` (`192.168.5.103`), `reto.grupo5reto4.eus` (`172.16.250.105`) y la resolución inversa PTR de `192.168.5.103` (`server3-g5.grupo5.local`).
@@ -517,28 +517,28 @@ De cara a una evolución hacia un entorno productivo de mayor envergadura, se pr
 * **Autor de la captura:** Enrique.
 
 #### Captura 17: Verificación de Servicios y Puertos en `server3-g5`
-![Estado Apache y Monitorix](capturas/captura_09_apache_monitorix_terminal.PNG)
+![Estado Apache y Monitorix](capturas/captura_17_web_monitorix_status.PNG)
 
 * **Qué se prueba:** Estado de `apache2` y `monitorix` mediante `systemctl status` y puertos en escucha con `ss -tulpn`.
 * **Resultado obtenido:** Ambos demonios `active (running)`; Apache escuchando en puerto `80` y Monitorix en puerto `8581`.
 * **Autor de la captura:** Enrique.
 
 #### Captura 18: Acceso Web al Portal *GP Euskadi - Bilbao 2026* (Vía NAT 8580)
-![Web navegador puerto 8580](capturas/captura_10_web_navegador_servidor103.jpg)
+![Web navegador puerto 8580](capturas/captura_18_web_puerto_8580.PNG)
 
 * **Qué se prueba:** Acceso externo al servidor web Apache2 a través de `http://grupo5reto4.eus:8580`.
 * **Resultado obtenido:** Carga completa de la web con cuenta atrás, galería fotográfica y descarga de normativa FIA con hash SHA-256.
 * **Autor de la captura:** Enrique.
 
 #### Captura 19: Acceso Web HTTPS al Portal Oficial
-![Web navegador HTTPS](capturas/captura_10_web_navegador.jpg)
+![Web navegador HTTPS](capturas/captura_19_web_https.PNG)
 
 * **Qué se prueba:** Resolución y carga del portal desde `https://reto.grupo5reto4.eus/index.html`.
 * **Resultado obtenido:** Visualización correcta del sitio web corporativo del evento.
 * **Autor de la captura:** Enrique.
 
 #### Captura 20: Panel de Monitorización en Tiempo Real (Monitorix)
-![Panel Monitorix](capturas/captura_10_web_navegador_monitorix.PNG)
+![Panel Monitorix](capturas/captura_20_monitorix_panel.PNG)
 
 * **Qué se prueba:** Acceso externo al panel de métricas del sistema a través del puerto NAT `8581` (`http://grupo5reto4.eus:8581/monitorix-cgi/monitorix.cgi...`).
 * **Resultado obtenido:** Visualización de gráficas de carga de CPU (*System load*), memoria RAM (957 MB), procesos activos (54) y *Uptime* (7 días) de `server3-g5`.
