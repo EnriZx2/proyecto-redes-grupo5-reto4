@@ -1,0 +1,18 @@
+$TTL    604800
+@   IN  SOA server1-g5.grupo5.local. admin.grupo5.local. (
+        2026110501 ; Serial
+        604800 ; Refresh
+        86400 ; Retry
+        2419200 ; Expire
+        604800 ) ; Negative Cache TTL
+
+; Servidores de nombres (NS) 
+@   IN  NS  server1-g5.grupo5.local.
+@   IN  NS  server2-g5.grupo5.local.
+
+;Registros inversos (PTR)
+1   IN  PTR pfsense.grupo5.local.
+101 IN  PTR server1-g5.grupo5.local.
+102 IN  PTR server2-g5.grupo5.local.
+103 IN  PTR server3-g5.grupo5.local.
+104 IN  PTR server4-g5.grupo5.local.

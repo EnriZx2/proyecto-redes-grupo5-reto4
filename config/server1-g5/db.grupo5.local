@@ -1,0 +1,34 @@
+$TTL    86400
+@   IN  SOA server1-g5.grupo5.local. root.grupo5.local. (
+        2026110607 ; Serial
+        600        ; Refresh
+        150        ; Retry
+        360000     ; Expire
+        86400 )    ; Minimum TTL
+
+; Seridores de nombres (NS)
+@   IN  NS  server1-g5.grupo5.local.
+@   IN  NS  server2-g5.grupo5.local.
+
+; Servidores e infraestructura(A)
+server1-g5      IN  A   192.168.5.101
+server2-g5      IN  A   192.168.5.102
+server3-g5      IN  A   192.168.5.103
+server4-g5      IN  A   192.168.5.104
+pfsense         IN  A   192.168.5.1
+
+; PCs Windows de los miembros del grupo (A)
+pc-win1         IN      A       172.26.44.23
+pc-win2         IN      A       172.26.44.24
+pc-win3         IN      A       172.26.44.25
+pc-win4         IN      A       172.26.44.8
+
+; Acceso externo / WAN y servidores del reto (A)
+www             IN      A       172.26.46.55
+reto            IN      A       172.16.250.105
+
+; Aliados (CNAME)
+web-wan         IN      CNAME   www
+monitor         IN      CNAME   server3-g5
+dns1            IN      CNAME   server1-g5
+dns2            IN      CNAME   server2-g5

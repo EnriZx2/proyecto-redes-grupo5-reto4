@@ -1,0 +1,13 @@
+zone "grupo5reto4.eus" {
+    type master;
+    file "/etc/bind/db.grupo5.local";
+    allow-transfer { 192.168.5.102; };
+    also-notify { 192.168.5.102; };
+};
+
+zone "5.168.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/db.192.168.5";
+    allow-transfer { 192.168.5.102; };
+    also-notify { 192.168.5.102; };
+};

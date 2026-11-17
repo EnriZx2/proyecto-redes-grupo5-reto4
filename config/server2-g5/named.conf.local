@@ -1,0 +1,11 @@
+zone "grupo5reto4.eus" {
+    type slave;
+    masters { 192.168.5.101; };
+    file "/var/cache/bind/db.grupo5reto4.eus";
+};
+
+zone "5.168.192.in-addr.arpa" {
+    type slave;
+    masters { 192.168.5.101; };
+    file "/var/cache/bind/db.inverso";
+};

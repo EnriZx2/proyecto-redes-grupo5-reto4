@@ -1,0 +1,22 @@
+acl "red-local" {
+        127.0.0.1;
+        192.168.5.0/24;
+        172.16.250.0/24;
+        172.26.0.0/16;
+};
+
+options {
+        directory "/var/cache/bind";
+
+        forwarders {
+                192.168.5.1;
+                1.1.1.1;
+                8.8.8.8;
+        };
+
+        allow-query { "red-local"; };
+        allow-recursion { "red-local"; };
+
+        dnssec-validation auto;
+        listen-on-v6 { none; };
+};
